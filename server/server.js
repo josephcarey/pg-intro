@@ -1,9 +1,13 @@
 // const { Pool, Client } = require( 'pg' );
 
 const express = require( 'express' );
+const bodyParser = require( 'body-parser' );
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+app.use( bodyParser.json() );
+app.use( bodyParser.urlencoded( { extended: true } ) );
 
 const pg = require( 'pg' );
 const Pool = pg.Pool;
@@ -32,11 +36,10 @@ pool.connect( ( err ) => {
 } );
 
 
-
 app.get( '/shoes', ( req, res ) => {
 
-
     pool.query( `SELECT * FROM "shoes";` )
+
         .then( ( results ) => {
             console.log( '### Back from db with:' );
             console.log( results.rows );
@@ -45,6 +48,23 @@ app.get( '/shoes', ( req, res ) => {
 
         } ).catch( ( error ) => {
             console.log( '### Error with SQL select for shoes:', error );
+            res.sendStatus( 500 );
+        } );
+
+} );
+
+app.post( '/shoes', ( req, res ) => {
+
+    console.log( req.body );
+
+
+    pool.query( `INSERT INTO "shoes"("name", "cost") VALUES ('${req.body.name}', ${req.body.cost})` )
+        .then( ( results ) => {
+            console.log( results );
+            res.sendStatus( 201 );
+        } ).catch( ( error ) => {
+            console.log( '### Error with adding to SQL:', error );
+            res.sendStatus( 500 );
         } );
 
 } );
