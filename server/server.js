@@ -1,5 +1,10 @@
 // const { Pool, Client } = require( 'pg' );
 
+const express = require( 'express' );
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+
 const pg = require( 'pg' );
 const Pool = pg.Pool;
 
@@ -26,10 +31,25 @@ pool.connect( ( err ) => {
     }
 } );
 
-pool.query( `SELECT * FROM "shoes";` )
-    .then( ( results ) => {
-        console.log( '### Back from db with:' );
-        console.log( results.rows );
-    } ).catch( ( error ) => {
-        console.log( '### Error with SQL select for shoes:', error );
-    } );
+
+
+app.get( '/shoes', ( req, res ) => {
+
+
+    pool.query( `SELECT * FROM "shoes";` )
+        .then( ( results ) => {
+            console.log( '### Back from db with:' );
+            console.log( results.rows );
+
+            res.send( results.rows );
+
+        } ).catch( ( error ) => {
+            console.log( '### Error with SQL select for shoes:', error );
+        } );
+
+} );
+
+// Spin up the server
+app.listen( PORT, () => {
+    console.log( '### Server up and listening on', PORT, '. . .' );
+} ) // Snd spin up server
