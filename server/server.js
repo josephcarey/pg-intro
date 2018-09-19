@@ -20,7 +20,7 @@ const pool = new Pool( {
 
 pool.connect( ( err ) => {
     if ( err ) {
-        console.log( 'fuuuck man', err );
+        console.log( 'something broke man', err );
     } else {
         console.log( 'up and running!' );
     }
